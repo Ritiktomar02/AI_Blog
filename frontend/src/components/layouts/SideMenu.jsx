@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../../context/userContext";
 import CharAvatar from "../Cards/CharAvatar";
 
-const SideMenu = ({ activeMenu, isBlogMenu }) => {
- const { user, clearUser } = useContext(UserContext);
-   
+const SideMenu = ({ activeMenu, isBlogMenu, setOpenSideMenu }) => {
+  const { user,setUser } = useContext(UserContext);
+
   const navigate = useNavigate();
 
   const handleClick = (route) => {
@@ -15,13 +15,15 @@ const SideMenu = ({ activeMenu, isBlogMenu }) => {
       handleLogout();
       return;
     }
+    setOpenSideMenu((prevstate) => !prevstate);
     navigate(route);
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    clearUser();
-    navigate("/login");
+    setUser(null)
+    setOpenSideMenu((prevstate) => !prevstate);
+    navigate("/");
   };
 
   const menuItems = isBlogMenu ? BLOG_NAVBAR_DATA : SIDE_MENU_DATA;
@@ -36,16 +38,21 @@ const SideMenu = ({ activeMenu, isBlogMenu }) => {
               alt="Profile"
               className="w-20 h-20 bg-slate-400 rounded-full"
             />
-          ) : (<CharAvatar
-          fullname={user?.name}
-          width="w-20"
-          height="h-20"
-          style="text-xl"/>)}
+          ) : (
+            <CharAvatar
+              fullname={user?.name}
+              width="w-20"
+              height="h-20"
+              style="text-xl"
+            />
+          )}
           <div>
             <h5 className='text-gray-950 font-medium leading-6 mt-1 "'>
               {user?.name || ""}
             </h5>
-            <p className="text-[13px] font-medium text-gray-800  text-center">{user?.email || ""}</p>
+            <p className="text-[13px] font-medium text-gray-800  text-center">
+              {user?.email || ""}
+            </p>
           </div>
         </div>
       )}
@@ -68,11 +75,11 @@ const SideMenu = ({ activeMenu, isBlogMenu }) => {
       {user && (
         <button
           className="w-full items-center flex gap-4 text-[15px] py-3 px-6 rounded-lg mb-3 cursor-pointer"
-          onClick={()=>handleLogout()} 
+          onClick={() => handleLogout()}
         >
           <LuLogOut className="text-xl" />
           Logout
-        </button> 
+        </button>
       )}
     </div>
   );

@@ -1,21 +1,40 @@
 const BlogPost = require("../models/BlogPost");
+const Comment = require("../models/Comment");
+const { uploadToCloudinary } = require("../middleware/uploadMiddleware");
 
 exports.createPost = async (req, res) => {
   try {
-    const { title, content, coverImageUrl, tags, isDraft, generatedByAI } =
-      req.body;
+    const { title, content, tags, isDraft, generatedByAI } = req.body;
+
+    let coverImageUrl = null;
+
+    if (req.files && req.files.coverImage) {
+      coverImageUrl = await uploadToCloudinary(
+        req.files.coverImage,
+        "blog_cover"
+      );
+    }
 
     const slug = title
       .toLowerCase()
       .replace(/ /g, "-")
       .replace(/[^\w-]+/g, "");
 
+   let tagsArray = req.body.tags || req.body["tags[]"] || [];
+    if (tags) {
+      if (Array.isArray(tags)) {
+        tagsArray = tags;
+      } else {
+        tagsArray = tags.split(",").map((t) => t.trim());
+      }
+    }
+
     const newPost = new BlogPost({
       title,
       slug,
       content,
       coverImageUrl,
-      tags,
+      tags: tagsArray,
       author: req.user._id,
       isDraft,
       generatedByAI,
@@ -68,7 +87,17 @@ exports.deletePost = async (req, res) => {
     const post = await BlogPost.findById(id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
+    if (
+      post.author.toString() !== req.user._id.toString() &&
+      !req.user.isAdmin
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorised to delete this post" });
+    }
+
     await post.deleteOne();
+    await Comment.deleteMany({ post: id });
 
     res.json({ message: "Post deleted successfully" });
   } catch (err) {

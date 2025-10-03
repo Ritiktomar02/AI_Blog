@@ -16,33 +16,36 @@ import PrivateRoute from "./routes/PrivateRoute.jsx";
 const App = () => {
   return (
     <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<BlogLandingPage />} />
-          <Route path="/:slug" element={<BlogPostView />} />
-          <Route path="/tag/:tagName" element={<PostByTags />} />
-          <Route path="/search" element={<SearchPosts />} />
+      <div>
+        <Router>
+          <Routes>
+            <Route path="/" element={<BlogLandingPage />} />
+            <Route path="/:slug" element={<BlogPostView />} />
+            <Route path="/tag/:tagName" element={<PostByTags />} />
+            <Route path="/search" element={<SearchPosts />} />
 
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-            <Route path="/admin/dashboard" element={<Dashboard />} />
-            <Route path="/admin/posts" element={<BlogPosts />} />
-            <Route path="/admin/create" element={<BlogPostEditor />} />
-            <Route
-              path="/admin/edit/:postSlug"
-              element={<BlogPostEditor isEdit={true} />}
-            />
-            <Route path="/admin/comments" element={<Comments />} />
-          </Route>
+            <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+              <Route path="/admin/dashboard" element={<Dashboard />} />
+              <Route path="/admin/posts" element={<BlogPosts />} />
+              <Route path="/admin/create" element={<BlogPostEditor />} />
+              <Route
+                path="/admin/edit/:postSlug"
+                element={<BlogPostEditor isEdit={true} />}
+              />
+              <Route path="/admin/comments" element={<Comments />} />
+            </Route>
 
-          <Route path="/admin-login" element={<AdminLogin />} />
-        </Routes>
-      </Router>
+            <Route path="/admin-login" element={<AdminLogin />} />
+          </Routes>
+        </Router>
 
-      <Toaster
-        toastOptions={{
-          style: { fontSize: "13px" },
-        }}
-      />
+        <Toaster
+          toastOptions={{
+            className:"",
+            style: { fontSize: "13px" },
+          }}
+        />
+      </div>
     </UserProvider>
   );
 };

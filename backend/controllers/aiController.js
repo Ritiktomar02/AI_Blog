@@ -19,7 +19,7 @@ exports.generateBlogPost = async (req, res) => {
     const prompt = `Write a markdown-formatted blog post titled "${title}". Use a ${tone} tone. Include an introduction, subheadings, code examples if relevant, and a conclusion.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash-lite",
       contents: prompt,
     });
 
@@ -42,7 +42,7 @@ exports.generateBlogPostIdeas = async (req, res) => {
     const prompt = blogPostIdeasPrompt(topics);
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash-lite",
       contents: prompt,
     });
 
@@ -73,7 +73,7 @@ exports.generateCommentReply = async (req, res) => {
     const prompt = generateReplyPrompt({ author, content });
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash-lite",
       contents: prompt,
     });
 
@@ -95,7 +95,7 @@ exports.generatePostSummary = async (req, res) => {
     const prompt = blogSummaryPrompt(content);
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash-lite",
       contents: prompt,
     });
 

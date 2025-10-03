@@ -15,7 +15,7 @@ export const SIDE_MENU_DATA=[
     },
     {
         id:"03",
-        label:"Expense",
+        label:"Comments",
         icon:LuMessageSquareQuote,
         path:"/admin/comments"
     },

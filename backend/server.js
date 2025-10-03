@@ -39,7 +39,7 @@ app.use(express.json());
 connectDB();
 app.use('/api/v1/ai',aiRoutes)
 app.use('/api/v1/auth',authRoutes)
-app.use('/api/v1/blogs',blogPostRoutes)
+app.use('/api/v1/posts',blogPostRoutes)
 app.use('/api/v1/comments',commentRoutes)
 app.use('/api/v1/dashboard-summary',dashboardRoutes)
 

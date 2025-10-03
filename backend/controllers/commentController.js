@@ -14,7 +14,7 @@ exports.addComment = async (req, res) => {
 
     const comment = await Comment.create({
       post: postId,
-      author: req.user._id,  // ✅ fixed
+      author: req.user._id,  
       content,
       parentComment: parentComment || null,
     });

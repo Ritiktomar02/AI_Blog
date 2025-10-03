@@ -1,82 +1,119 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import { LuSearch } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { BLOG_NAVBAR_DATA } from "../../../utils/data";
 import SideMenu from "../SideMenu";
+import UserContext from "../../../context/userContext.jsx";
+import ProfileInfoCard from "../../Cards/ProfileInfoCard.jsx";
+import Modal from "../../Modal.jsx";
+import Login from "../../Auth/Login.jsx"  
+import SignUp from "../../Auth/SignUp.jsx"; 
 
 const BlogNavbar = ({ activeMenu }) => {
-  const [opensidemenu, setopensidemenu] = useState(false);
-  const [opendsearchbar, setopensearchsidebar] = useState(false);
+  const [openSideMenu, setOpenSideMenu] = useState(false);
+  const [openSearchBar, setOpenSearchBar] = useState(false);
+
+  const { user, setOpenAuthForm } = useContext(UserContext);
 
   return (
-    <div className="bg-white border-b border-gray-200/50 backdrop-blur-[2px] py-4 px-7 sticky top-0 z-30">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="flex gap-5">
-          <button
-            className="block lg:hidden text-black -mt-1"
-            onClick={() => setopensidemenu(!opensidemenu)}
-          >
-            {opensidemenu ? (
-              <HiOutlineX className="text-2xl" />
+    <>
+      <div className="bg-white border-b border-gray-200/50 backdrop-blur-[2px] py-4 px-7 sticky top-0 z-30">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="flex gap-5 items-center">
+            <button
+              className="block lg:hidden text-black -mt-1"
+              onClick={() => setOpenSideMenu(!openSideMenu)}
+            >
+              {openSideMenu ? (
+                <HiOutlineX className="text-2xl" />
+              ) : (
+                <HiOutlineMenu className="text-2xl" />
+              )}
+            </button>
+
+            <Link to="/">
+              <img
+                src="/images/Logo.png"
+                alt="logo"
+                className="h-[24px] md:h-[26px]"
+              />
+            </Link>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-10">
+            {BLOG_NAVBAR_DATA.map((item, index) => {
+              if (item?.onlySideMenu) return null;
+              return (
+                <Link key={item.id} to={item.path}>
+                  <li className="text-[15px] text-black font-medium list-none relative group cursor-pointer">
+                    {item.label}
+                    <span
+                      className={`absolute inset-x-0 bottom-0 h-[2px] bg-sky-500 transition-all duration-300 origin-left ${
+                        index === 0 ? "scale-x-100" : "scale-x-0"
+                      } group-hover:scale-x-100`}
+                    ></span>
+                  </li>
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-6">
+            <button
+              className="hover:text-sky-500 cursor-pointer"
+              onClick={() => setOpenSearchBar(true)}
+            >
+              <LuSearch className="text-[22px]" />
+            </button>
+
+            {!user ? (
+              <button
+                className="flex items-center justify-center gap-3 bg-gradient-to-r from-sky-500 to-cyan-400 text-xs md:text-sm font-semibold text-white px-5 md:px-7 py-2 rounded-full hover:bg-black hover:text-white transition-colors cursor-pointer hover:shadow-2xl hover:shadow-cyan-200"
+                onClick={() => setOpenAuthForm(true)}
+              >
+                Login / Sign Up
+              </button>
             ) : (
-              <HiOutlineMenu className="text-2xl" />
-            )}
-          </button>
-
-          <Link to="/">
-            <img
-              src="/images/Logo.png"
-              alt="logo"
-              className="h-[24px] md:h-[26px]"
-            />
-          </Link>
-        </div>
-
-        <nav className="hidden md:flex items-center gap-10">
-          {BLOG_NAVBAR_DATA.map((item, index) => {
-            if (item?.onlySideMenu) return;
-            return (
-              <Link key={item.id} to={item.path}>
-                <li className=" text-[15px] text-black font-medium list-none relative group cursor-pointer ">
-                  {item.label}
-                  <span
-                    className={`absolute inset-x-0 bottom-0 h-[2px] bg-sky-500 transition-all duration-300 origin-left ${
-                      index == 0 ? "scale-x-100" : "scale-x-0"
-                    } group-hover:scale-x-100`}
-                  ></span>
-                </li>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center gap-6">
-          <button
-            className="hover:text-sky-500 cursor-pointer"
-            onClick={() => setopensearchsidebar(true)}
-          >
-            <LuSearch className="text-[22px]" />
-          </button>
-
-          <button
-            className="flex items-center justify-center gap-3 bg-linear-to-r from-sky-500 to-cyan-400 text-xs md:text-sm font-semibold text-white px-5 md:px-7 py-2 rounded-full hover:bg-black hover:text-white transition-colors cursor-pointer hover:shadow-2xl hover:shadow-cyan-200"
-            onClick={() => setopenauthform(true)}
-          >
-            Login/SignUP
-          </button>
-
-          {
-            opensidemenu && (
-              <div className="fixed top-[61px] left-0 shadow-lg bg-white">
-                <SideMenu activeMenu={activeMenu} isBlogMenu/>
+              <div className="hidden md:block">
+                <ProfileInfoCard />
               </div>
-            )
-          }
+            )}
+
+            {openSideMenu && (
+              <div className="fixed top-full left-0 w-full shadow-lg bg-white">
+                <SideMenu activeMenu={activeMenu} isBlogMenu setOpenSideMenu={setOpenSideMenu}/>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      <AuthModal />
+    </>
   );
 };
 
 export default BlogNavbar;
+
+
+const AuthModal = () => {
+  const { openAuthForm, setOpenAuthForm } = useContext(UserContext);
+  const [currentPage, setCurrentPage] = useState("login");
+
+  return (
+    <Modal
+      isOpen={openAuthForm}
+      onClose={() => {
+        setOpenAuthForm(false);
+        setCurrentPage("login");
+      }}
+      hideHeader
+    >
+      <div>
+        {currentPage === "login" && <Login setCurrentPage={setCurrentPage} />}
+        {currentPage === "signup" && (<SignUp setCurrentPage={setCurrentPage} />)}
+      </div>
+    </Modal>
+  );
+};
