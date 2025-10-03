@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { LuReply, LuChevronDown, LuTrash2, LuDot } from "react-icons/lu";
 import moment from "moment";
-import UserContext from "../../context/userContext";
+import { LuChevronDown, LuDot, LuReply, LuTrash2 } from "react-icons/lu";
 import toast from "react-hot-toast";
-import axiosinstance from "../../utils/axiosInstance";
-import { API_PATHS } from "../../utils/apiPaths";
-import CommentReplyInput from "../Inputs/CommentReplyInput";
+import CommentReplyInput from "../../../components/Inputs/CommentReplyInput";
+import { API_PATHS } from "../../../utils/apiPaths";
+import axiosinstance from "../../../utils/axiosInstance";
+import UserContext from "../../../context/userContext";
 
 const CommentInfoCard = ({
   commentId,
@@ -19,7 +19,8 @@ const CommentInfoCard = ({
   onDelete,
   isSubReply,
 }) => {
-  const { user } = useContext(UserContext);
+  const { user, setOpenAuthForm } = useContext(UserContext);
+
   const [replyText, setReplyText] = useState("");
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showSubReplies, setShowSubReplies] = useState(false);
@@ -37,7 +38,6 @@ const CommentInfoCard = ({
       });
 
       toast.success("Reply added successfully!");
-
       setReplyText("");
       setShowReplyForm(false);
       getAllComments();
@@ -47,12 +47,8 @@ const CommentInfoCard = ({
   };
 
   return (
-    <div
-      className={`bg-white p-3 rounded-lg cursor-pointer group ${
-        isSubReply ? "mb-1" : "mb-4"
-      }`}
-    >
-      <div className="grid grid-cols-12 gap-3 ">
+    <div className="bg-white p-3 rounded-lg cursor-pointer group mb-5">
+      <div className="grid grid-cols-12 gap-3">
         <div className="col-span-12 md:col-span-8 order-2 md:order-1">
           <div className="flex items-start gap-3">
             <img
@@ -77,14 +73,23 @@ const CommentInfoCard = ({
                 {!isSubReply && (
                   <>
                     <button
-                      className="flex items-center gap-2 text-[13px] font-medium text-sky-950 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
-                      onClick={() => setShowReplyForm((prev) => !prev)}
+                      className="flex items-center gap-2 text-[13px] font-medium text-sky-600 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
+                      onClick={() => {
+                        if (!user) {
+                          setOpenAuthForm(true);
+                          return;
+                        }
+                        setShowReplyForm((prevState) => !prevState);
+                      }}
                     >
                       <LuReply /> Reply
                     </button>
+
                     <button
-                      className="flex items-center gap-1.5 text-[13px] font-medium text-sky-950 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
-                      onClick={() => setShowSubReplies((prev) => !prev)}
+                      className="flex items-center gap-1.5 text-[13px] font-medium text-sky-600 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-sky-500 hover:text-white cursor-pointer"
+                      onClick={() =>
+                        setShowSubReplies((prevState) => !prevState)
+                      }
                     >
                       {replies?.length || 0}{" "}
                       {replies?.length === 1 ? "reply" : "replies"}{" "}
@@ -94,34 +99,10 @@ const CommentInfoCard = ({
                     </button>
                   </>
                 )}
-
-                <button
-                  onClick={() => onDelete()}
-                  className="flex items-center gap-1.5 text-[13px] font-medium text-sky-950 bg-sky-50 px-4 py-0.5 rounded-full hover:bg-rose-500 hover:text-white cursor-pointer"
-                >
-                  <LuTrash2 /> Delete
-                </button>
               </div>
             </div>
           </div>
         </div>
-
-        {!isSubReply && (
-          <div className="col-span-12 md:col-span-4 order-1 md:order-2 flex items-center gap-4">
-            <img
-              src={post?.coverImageUrl}
-              alt="post cover"
-              className="w-16 h-16 object-cover rounded"
-            />
-            <div className="flex-1 ">
-              <div className="flex items-center gap-1">
-                <h4 className="text-xs text-gray-800 font-medium">
-                  {post.title}
-                </h4>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {!isSubReply && showReplyForm && (
@@ -133,6 +114,7 @@ const CommentInfoCard = ({
           setReplyText={setReplyText}
           handleAddReply={handleAddReply}
           handleCancelReply={handleCancelReply}
+          disableAutoGen
         />
       )}
 
@@ -154,7 +136,7 @@ const CommentInfoCard = ({
               updatedOn={
                 comment.updatedAt
                   ? moment(comment.updatedAt).format("Do MMM YYYY")
-                  : ""
+                  : "--"
               }
               onDelete={() => onDelete(comment._id)}
             />

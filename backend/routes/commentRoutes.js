@@ -5,8 +5,8 @@ const{addComment,getCommentsByPost,deleteComment,getAllComments}=require("../con
 const protect=require("../middleware/authMiddleware")
 
 router.post("/:postId",protect,addComment)
-router.get("/:postId",protect,getCommentsByPost)
-router.get("/",protect,getAllComments)
+router.get("/:postId",getCommentsByPost)
+router.get("/",getAllComments)
 router.delete("/:commentId",protect,deleteComment)
 
 

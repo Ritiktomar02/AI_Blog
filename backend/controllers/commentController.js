@@ -71,9 +71,7 @@ exports.deleteComment = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // delete main comment
-    await comment.deleteOne();
-    // delete replies
+    await Comment.deleteOne({id:commentId});
     await Comment.deleteMany({ parentComment: commentId });
 
     res.json({ message: "Comment and replies deleted successfully" });
