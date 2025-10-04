@@ -9,7 +9,7 @@ import ProfileInfoCard from "../../Cards/ProfileInfoCard.jsx";
 import Modal from "../../Modal.jsx";
 import Login from "../../Auth/Login.jsx"  
 import SignUp from "../../Auth/SignUp.jsx"; 
-import SearchBarPopUp from "../../../pages/Blog/components/SearchBarPopUp.jsx";
+import SearchBarPopup from "../../../pages/Blog/components/SearchBarPopup.jsx";
 
 const BlogNavbar = ({ activeMenu }) => {
   const [openSideMenu, setOpenSideMenu] = useState(false);
@@ -91,7 +91,7 @@ const BlogNavbar = ({ activeMenu }) => {
       </div>
 
       <AuthModal />
-      <SearchBarPopUp isOpen={openSearchBar} setIsOpen={setOpenSearchBar}/>
+      <SearchBarPopup isOpen={openSearchBar} setIsOpen={setOpenSearchBar}/>
     </>
   );
 };
