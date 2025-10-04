@@ -14,7 +14,7 @@ import {
 } from "react-icons/lu";
 import TagInsights from "../../components/Cards/TagInsights";
 import TopPostCard from "../../components/Cards/TopPostCard";
-import RecentCommentslist from "../../components/Cards/RecentCommentslist";
+import RecentCommentsList from "../../components/Cards/RecentCommentsList";
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
@@ -129,7 +129,7 @@ const Dashboard = () => {
                 <h5 className="font-medium">Recent Comments</h5>
               </div>
 
-              <RecentCommentslist
+              <RecentCommentsList
               comments={dashboardData.recentComments || []}/>
             </div>
           </div>

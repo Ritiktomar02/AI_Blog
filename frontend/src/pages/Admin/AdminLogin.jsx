@@ -1,5 +1,4 @@
 import React from "react";
-import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { useState } from "react";
 import Login from "../../components/Auth/Login";
 import SignUp from "../../components/Auth/SignUp";
