@@ -66,7 +66,7 @@ const Dashboard = () => {
               <DashboardSummaryCard
                 icon={<LuGalleryVerticalEnd />}
                 label="Total Posts"
-                value={dashboardData?.stats?.topPosts || 0}
+                value={dashboardData?.stats?.totalPosts || 0}
                 bgColor="bg-sky-100/60"
                 color="text-sky-500"
               />
@@ -90,7 +90,7 @@ const Dashboard = () => {
               <DashboardSummaryCard
                 icon={<LuHeart />}
                 label="Total Likes"
-                value={dashboardData?.stats?.topLikes || 0}
+                value={dashboardData?.stats?.totalLikes || 0}
                 bgColor="bg-sky-100/60"
                 color="text-sky-500"
               />
